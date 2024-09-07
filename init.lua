@@ -103,6 +103,7 @@ bootstrap_paq {
     {'echasnovski/mini.statusline', branch = "stable"},
     {'echasnovski/mini.completion', branch = "stable"},
 
+    'nvim-tree/nvim-web-devicons',
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
 
@@ -137,6 +138,8 @@ end
 require('mini.completion').setup()
 
 -- telescope config
+require('nvim-web-devicons').setup()
+
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find files"})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Live Grep"})
