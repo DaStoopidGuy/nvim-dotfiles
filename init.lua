@@ -47,7 +47,7 @@ opt.cursorline = true
 opt.termguicolors = true
 opt.signcolumn = "yes" -- Keep signcolumn on by default
 
-opt.showmode = false
+opt.showmode = true
 
 -- Sync clipboard between OS and Neovim.
 vim.schedule(function()
@@ -102,10 +102,13 @@ bootstrap_paq {
     {'echasnovski/mini.surround', branch = "stable"},
     {'echasnovski/mini.statusline', branch = "stable"},
     {'echasnovski/mini.completion', branch = "stable"},
+    {'echasnovski/mini-git', branch = "stable"},
 
     'nvim-tree/nvim-web-devicons',
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
+
+    'folke/todo-comments.nvim',
 
     "williamboman/mason.nvim",
     "williamboman/mason-lspconfig.nvim",
@@ -114,6 +117,7 @@ bootstrap_paq {
     "akinsho/toggleterm.nvim",
 }
 -- setting up plugins
+-- colorscheme config
 vim.cmd("colorscheme rose-pine")
 
 -- which-key config
@@ -136,6 +140,7 @@ statusline.section_location = function()
     return "%2l:%-2v"
 end
 require('mini.completion').setup()
+require('mini.git').setup()
 
 -- telescope config
 require('nvim-web-devicons').setup()
@@ -147,6 +152,9 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Find buffers"})
 vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = "Find recent files"})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Find help"})
 vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Find keymaps"})
+
+-- todo-comments config
+require('todo-comments').setup({signs = false})
 
 -- lsp config
 local lspconfig = require("lspconfig")
