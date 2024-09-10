@@ -88,9 +88,10 @@ vim.g.maplocalleader = " "
 -- Plugins
 -- -----------------------
 require("lazy").setup({
-    {   -- colorscheme
+    {   -- colorscheme config
         "rose-pine/neovim", name = "rose-pine",
         priority = 1000,
+        lazy = false,
         config = function()
             vim.cmd("colorscheme rose-pine")
         end
