@@ -21,7 +21,6 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
--- This is also a good place to setup other settings (vim.opt)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -50,9 +49,7 @@ opt.signcolumn = "yes" -- Keep signcolumn on by default
 opt.showmode = true
 
 -- Sync clipboard between OS and Neovim.
-vim.schedule(function()
-    vim.opt.clipboard = "unnamedplus"
-end)
+opt.clipboard = "unnamedplus"
 
 opt.splitright = true
 opt.splitbelow = true
@@ -179,6 +176,14 @@ require("lazy").setup({
                 end
             }
             require("mason-lspconfig").setup_handlers(handlers)
+        end
+    },
+    {   -- file browser
+        'stevearc/oil.nvim',
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        config = function()
+            require("oil").setup()
+            vim.keymap.set('n', '-', "<CMD>Oil<CR>", { desc = "Open parent directory" })
         end
     },
     { 'folke/todo-comments.nvim', config = true },
