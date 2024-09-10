@@ -180,6 +180,7 @@ require("lazy").setup({
             require("mason-lspconfig").setup_handlers(handlers)
         end
     },
+    { 'folke/todo-comments.nvim', config = true },
     {
         "akinsho/toggleterm.nvim",
         config = function()
