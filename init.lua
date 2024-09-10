@@ -60,11 +60,11 @@ opt.scrolloff = 10
 -- Keymaps
 -- -----------------------
 
--- Disable arrow keys in normal mode
-vim.keymap.set("n", "<left>" , '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set("n", "<up>"   , '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set("n", "<down>" , '<cmd>echo "Use j to move!!"<CR>')
+-- Disable arrow keys in insert mode
+vim.keymap.set("i", "<left>" , '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set("i", "<right>", '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set("i", "<up>"   , '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set("i", "<down>" , '<cmd>echo "Use j to move!!"<CR>')
 
 -- clear highlights on search when <Esc> is pressed
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -77,6 +77,12 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move focus to the left window" 
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move focus to the upper window" })
+
+vim.keymap.set("n", "<C-H>", ":wincmd H<CR>", { desc = "Move focus to the left window"  })
+vim.keymap.set("n", "<C-L>", ":wincmd L<CR>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<C-J>", ":wincmd J<CR>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<C-K>", ":wincmd K<CR>", { desc = "Move focus to the upper window" })
+
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -102,6 +108,7 @@ require("lazy").setup({
                 {"<leader>f", group = "[F]ind"},
                 {"<leader>r", group = "[R]ename"},
                 {"<leader>c", group = "[C]ode Actions"},
+                {"<leader>w", proxy = "<c-w>", group = "[W]indow"},
             })
         end
     },
@@ -137,11 +144,11 @@ require("lazy").setup({
         config = function()
             local builtin = require('telescope.builtin')
             vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find files"})
-            vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = "Live Grep"})
-            vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = "Find buffers"})
-            vim.keymap.set('n', '<leader>f.', builtin.oldfiles, { desc = "Find recent files"})
-            vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = "Find help"})
-            vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = "Find keymaps"})
+            vim.keymap.set('n', '<leader>fg', builtin.live_grep , { desc = "Live Grep"})
+            vim.keymap.set('n', '<leader>fb', builtin.buffers   , { desc = "Find buffers"})
+            vim.keymap.set('n', '<leader>f.', builtin.oldfiles  , { desc = "Find recent files"})
+            vim.keymap.set('n', '<leader>fh', builtin.help_tags , { desc = "Find help"})
+            vim.keymap.set('n', '<leader>fk', builtin.keymaps   , { desc = "Find keymaps"})
         end
     },
     {   -- lsp config
