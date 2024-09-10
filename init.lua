@@ -46,7 +46,7 @@ opt.cursorline = true
 opt.termguicolors = true
 opt.signcolumn = "yes" -- Keep signcolumn on by default
 
-opt.showmode = true
+opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
 opt.clipboard = "unnamedplus"
