@@ -47,7 +47,7 @@ opt.cursorline = true
 opt.termguicolors = true
 opt.signcolumn = "yes" -- Keep signcolumn on by default
 
-opt.showmode = false
+opt.showmode = true
 
 -- Sync clipboard between OS and Neovim.
 vim.schedule(function()
