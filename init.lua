@@ -78,10 +78,10 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move focus to the right window"
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move focus to the upper window" })
 
-vim.keymap.set("n", "<C-H>", ":wincmd H<CR>", { desc = "Move focus to the left window"  })
-vim.keymap.set("n", "<C-L>", ":wincmd L<CR>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-J>", ":wincmd J<CR>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-K>", ":wincmd K<CR>", { desc = "Move focus to the upper window" })
+-- vim.keymap.set("n", "<C-S-h>", ":wincmd H<CR>", { desc = "Move focus to the left window"  })
+-- vim.keymap.set("n", "<C-S-l>", ":wincmd L<CR>", { desc = "Move focus to the right window" })
+-- vim.keymap.set("n", "<C-S-j>", ":wincmd J<CR>", { desc = "Move focus to the lower window" })
+-- vim.keymap.set("n", "<C-S-k>", ":wincmd K<CR>", { desc = "Move focus to the upper window" })
 
 
 vim.g.mapleader = " "
