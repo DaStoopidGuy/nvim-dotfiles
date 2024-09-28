@@ -49,7 +49,9 @@ opt.signcolumn = "yes" -- Keep signcolumn on by default
 opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
-opt.clipboard = "unnamedplus"
+vim.schedule(function()
+    opt.clipboard = "unnamedplus"
+end)
 
 opt.splitright = true
 opt.splitbelow = true
@@ -59,6 +61,8 @@ opt.scrolloff = 10
 -- -----------------------
 -- Keymaps
 -- -----------------------
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- Disable arrow keys in insert mode
 vim.keymap.set("i", "<left>" , '<cmd>echo "Use h to move!!"<CR>')
@@ -69,45 +73,49 @@ vim.keymap.set("i", "<down>" , '<cmd>echo "Use j to move!!"<CR>')
 -- clear highlights on search when <Esc> is pressed
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
--- exit terminal mode with <Esc><Esc>
+-- exit terminal mode with <Esc><Esc>-pine
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- split navigation
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move focus to the left window"  })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move focus to the upper window" })
+vim.keymap.set("n", "<leader>q", "<cmd>wincmd q<CR>", { desc = "Quit window" })
 
--- vim.keymap.set("n", "<C-S-h>", ":wincmd H<CR>", { desc = "Move focus to the left window"  })
--- vim.keymap.set("n", "<C-S-l>", ":wincmd L<CR>", { desc = "Move focus to the right window" })
--- vim.keymap.set("n", "<C-S-j>", ":wincmd J<CR>", { desc = "Move focus to the lower window" })
--- vim.keymap.set("n", "<C-S-k>", ":wincmd K<CR>", { desc = "Move focus to the upper window" })
+vim.keymap.set('n', '<leader>s', '<cmd>split<CR>'   , { desc = "Split window Horizontally" })
+vim.keymap.set('n', '<leader>v', '<cmd>vsplit<CR>'  , { desc = "Split window Vertically" })
 
+vim.keymap.set("n", "<leader>h", "<Cmd>wincmd h<CR>", { desc = "Move focus to the left window"  })
+vim.keymap.set("n", "<leader>l", "<Cmd>wincmd l<CR>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<leader>j", "<Cmd>wincmd j<CR>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<leader>k", "<Cmd>wincmd k<CR>", { desc = "Move focus to the upper window" })
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.keymap.set("n", "<leader>H", "<Cmd>wincmd H<CR>", { desc = "Move window to the left"  })
+vim.keymap.set("n", "<leader>L", "<Cmd>wincmd L<CR>", { desc = "Move window to the right" })
+vim.keymap.set("n", "<leader>J", "<Cmd>wincmd J<CR>", { desc = "Move window to the lower" })
+vim.keymap.set("n", "<leader>K", "<Cmd>wincmd K<CR>", { desc = "Move window to the upper" })
 
 -- -----------------------
 -- Plugins
 -- -----------------------
 require("lazy").setup({
+    { "rose-pine/neovim", name="rose-pine" },
     {   -- colorscheme config
-        "rose-pine/neovim", name = "rose-pine",
+        "kepano/flexoki-neovim", name = "flexoki",
         priority = 1000,
         lazy = false,
         config = function()
-            vim.cmd("colorscheme rose-pine")
+            vim.cmd.colorscheme "flexoki-dark"
         end
     },
     {
         "folke/which-key.nvim",
+        event = 'VimEnter',
         config = function()
             local wk = require('which-key')
             wk.setup()
             wk.add({
-                {"<leader>f", group = "[F]ind"},
                 {"<leader>r", group = "[R]ename"},
                 {"<leader>c", group = "[C]ode Actions"},
+                {"<leader>d", group = "[D]ocument"},
+                {"<leader>w", group = "[W]orkspace"},
                 {"<leader>w", proxy = "<c-w>", group = "[W]indow"},
             })
         end
@@ -136,19 +144,18 @@ require("lazy").setup({
     },
     {   -- telescope config
         'nvim-telescope/telescope.nvim',
-        priority = 100, -- because lsp config depends upon builtin...
+        event = "VimEnter",
         dependencies = {
-            { 'nvim-tree/nvim-web-devicons', opts = {} },
             'nvim-lua/plenary.nvim',
+            { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
         },
         config = function()
             local builtin = require('telescope.builtin')
-            vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = "Find files"})
-            vim.keymap.set('n', '<leader>fg', builtin.live_grep , { desc = "Live Grep"})
-            vim.keymap.set('n', '<leader>fb', builtin.buffers   , { desc = "Find buffers"})
-            vim.keymap.set('n', '<leader>f.', builtin.oldfiles  , { desc = "Find recent files"})
-            vim.keymap.set('n', '<leader>fh', builtin.help_tags , { desc = "Find help"})
-            vim.keymap.set('n', '<leader>fk', builtin.keymaps   , { desc = "Find keymaps"})
+            vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = "Find files"})
+            vim.keymap.set('n', '<leader>g', builtin.live_grep , { desc = "Live Grep"})
+            vim.keymap.set('n', '<leader>b', builtin.buffers   , { desc = "Buffers"})
+            vim.keymap.set('n', '<leader>.', builtin.oldfiles  , { desc = "Recent files"})
+            vim.keymap.set('n', '<leader>p', builtin.builtin   , { desc = "Select Telescope" })
         end
     },
     {   -- lsp config
@@ -160,12 +167,16 @@ require("lazy").setup({
         config = function()
             local builtin = require("telescope.builtin")
             local on_attach = function(_, _)
-                vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename        , { desc = "Rename symbol" })
-                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action   , { desc = "Code Actions" })
-                vim.keymap.set('n', 'gd'        , vim.lsp.buf.definition    , { desc = "Goto Definition" })
-                vim.keymap.set('n', 'gi'        , vim.lsp.buf.implementation, { desc = "Goto Implementation" })
-                vim.keymap.set('n', 'gr'        , builtin.lsp_references    , { desc = "Goto References" })
-                vim.keymap.set('n', 'K'         , vim.lsp.buf.hover         , { desc = "Show documentation" })
+                vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename               , { desc = "Rename symbol" })
+                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action          , { desc = "Code Actions" })
+                vim.keymap.set('n', '<leader>ds', builtin.lsp_document_symbols         , { desc = "Find Document Symbols" })
+                vim.keymap.set('n', '<leader>ws', builtin.lsp_dynamic_workspace_symbols, { desc = "Find Workspace Symbols" })
+                vim.keymap.set('n', 'gd'        , vim.lsp.buf.definition           , { desc = "Goto Definition" })
+                vim.keymap.set('n', 'gD'        , vim.lsp.buf.declaration          , { desc = "Goto Declaration" })
+                vim.keymap.set('n', 'gi'        , vim.lsp.buf.implementation       , { desc = "Goto Implementation" })
+                vim.keymap.set('n', 'gr'        , builtin.lsp_references           , { desc = "Goto References" })
+                vim.keymap.set('n', 'gt'        , builtin.lsp_type_definitions     , { desc = "Goto Type Definition" })
+                vim.keymap.set('n', 'K'         , vim.lsp.buf.hover                , { desc = "Show documentation" })
             end
 
             local lspconfig = require("lspconfig")
@@ -206,6 +217,15 @@ require("lazy").setup({
             end)
         end
     },
+})
+
+-- Highlight when yanking (copying) text
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('stinky-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
 })
 
 -- neovide specific config >:3
