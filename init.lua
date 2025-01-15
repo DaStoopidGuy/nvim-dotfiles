@@ -29,7 +29,8 @@ local opt = vim.o
 opt.relativenumber = true
 opt.number = true
 
-opt.mouse = ""
+-- empty string for disabling mouse
+opt.mouse = "a"
 
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -63,12 +64,6 @@ opt.scrolloff = 10
 -- -----------------------
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
--- Disable arrow keys in insert mode
-vim.keymap.set("i", "<left>" , '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set("i", "<right>", '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set("i", "<up>"   , '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set("i", "<down>" , '<cmd>echo "Use j to move!!"<CR>')
 
 -- clear highlights on search when <Esc> is pressed
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -156,6 +151,7 @@ require("lazy").setup({
             vim.keymap.set('n', '<leader>b', builtin.buffers   , { desc = "Buffers"})
             vim.keymap.set('n', '<leader>.', builtin.oldfiles  , { desc = "Recent files"})
             vim.keymap.set('n', '<leader>p', builtin.builtin   , { desc = "Select Telescope" })
+            vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = "Fuzzy find in Current Buffer"})
         end
     },
     {   -- lsp config
