@@ -1,4 +1,4 @@
--- Bootstrap lazy.nvim
+-- Bootstrap Paq
 local function clone_paq()
     local path = vim.fn.stdpath("data") .. "/site/pack/paqs/start/paq-nvim"
     local is_installed = vim.fn.empty(vim.fn.glob(path)) == 0
@@ -19,6 +19,7 @@ local function bootstrap_paq(packages)
     -- Read and install packages
     paq(packages)
     paq.install()
+    paq.update()
 end
 
 -- -----------------------
@@ -108,12 +109,6 @@ bootstrap_paq {
 
     -- mini plugins
     { "echasnovski/mini.nvim",       branch = "stable" },
-    { "echasnovski/mini.align",      branch = "stable" },
-    { "echasnovski/mini.pairs",      branch = "stable" },
-    { "echasnovski/mini.ai",         branch = "stable" },
-    { "echasnovski/mini.surround",   branch = "stable" },
-    { "echasnovski/mini.statusline", branch = "stable" },
-    { "echasnovski/mini-git",        branch = "stable", as = "mini.git" },
 
     -- "folke/todo-comments.nvim",
 
@@ -274,6 +269,7 @@ local on_attach = function(_, _)
     vim.keymap.set('n', 'K'         , vim.lsp.buf.hover                , { desc = "Show documentation" })
 end
 
+-- local lspconfig = require("lspconfig")
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 local handlers = {
@@ -294,7 +290,10 @@ local handlers = {
     end
 }
 require("mason").setup()
-require("mason-lspconfig").setup_handlers(handlers)
+require("mason-lspconfig").setup({
+    automatic_installation = true,
+    handlers = handlers, -- this works for older versions
+})
 
 --
 --
