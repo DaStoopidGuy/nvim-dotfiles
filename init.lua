@@ -1,6 +1,4 @@
--- -----------------------
 -- Bootstrap Paq
--- -----------------------
 local function clone_paq()
     local path = vim.fn.stdpath("data") .. "/site/pack/paqs/start/paq-nvim"
     local is_installed = vim.fn.empty(vim.fn.glob(path)) == 0
@@ -17,6 +15,8 @@ local function bootstrap_paq(packages)
     if first_install then
         vim.notify("Installing plugins... If prompted, hit Enter to continue.")
     end
+
+    -- Read and install packages
     paq(packages)
     paq.install()
 end
@@ -24,81 +24,167 @@ end
 -- -----------------------
 -- Options
 -- -----------------------
+
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
 local opt = vim.o
 
 opt.relativenumber = true
 opt.number = true
+
+-- empty string for disabling mouse
+-- opt.mouse = "a"
 opt.mouse = ""
+
 opt.tabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
 opt.autoindent = true
+
 opt.wrap = true
+
 opt.ignorecase = true
 opt.smartcase = true
+
 opt.cursorline = true
+
 opt.termguicolors = true
-opt.signcolumn = "yes"
+opt.signcolumn = "yes" -- Keep signcolumn on by default
+
 opt.showmode = false
+
+-- Sync clipboard between OS and Neovim.
 vim.schedule(function()
     opt.clipboard = "unnamedplus"
 end)
+
 opt.splitright = true
 opt.splitbelow = true
+
 opt.scrolloff = 10
 
 -- -----------------------
 -- Keymaps
 -- -----------------------
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- clear highlights on search when <Esc> is pressed
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
+-- exit terminal mode with <Esc><Esc>-pine
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
--- Split navigation
-vim.keymap.set('n', '<leader>q', '<cmd>wincmd q<CR>', { desc = "Quit window" })
-vim.keymap.set('n', '<leader>s', '<cmd>split<CR>', { desc = "Split window Horizontally" })
-vim.keymap.set('n', '<leader>v', '<cmd>vsplit<CR>', { desc = "Split window Vertically" })
+-- split navigation
+vim.keymap.set("n", "<leader>q", "<cmd>wincmd q<CR>", { desc = "Quit window" })
 
-vim.keymap.set("n", "<leader>h", "<Cmd>wincmd h<CR>")
-vim.keymap.set("n", "<leader>l", "<Cmd>wincmd l<CR>")
-vim.keymap.set("n", "<leader>j", "<Cmd>wincmd j<CR>")
-vim.keymap.set("n", "<leader>k", "<Cmd>wincmd k<CR>")
+vim.keymap.set('n', '<leader>x', '<cmd>split<CR>'   , { desc = "Split window Horizontally" })
+vim.keymap.set('n', '<leader>v', '<cmd>vsplit<CR>'  , { desc = "Split window Vertically" })
 
--- Move windows
-vim.keymap.set("n", "<leader>H", "<Cmd>wincmd H<CR>")
-vim.keymap.set("n", "<leader>L", "<Cmd>wincmd L<CR>")
-vim.keymap.set("n", "<leader>J", "<Cmd>wincmd J<CR>")
-vim.keymap.set("n", "<leader>K", "<Cmd>wincmd K<CR>")
+vim.keymap.set("n", "<leader>h", "<Cmd>wincmd h<CR>", { desc = "Move focus to the left window"  })
+vim.keymap.set("n", "<leader>l", "<Cmd>wincmd l<CR>", { desc = "Move focus to the right window" })
+vim.keymap.set("n", "<leader>j", "<Cmd>wincmd j<CR>", { desc = "Move focus to the lower window" })
+vim.keymap.set("n", "<leader>k", "<Cmd>wincmd k<CR>", { desc = "Move focus to the upper window" })
+
+vim.keymap.set("n", "<leader>H", "<Cmd>wincmd H<CR>", { desc = "Move window to the left"  })
+vim.keymap.set("n", "<leader>L", "<Cmd>wincmd L<CR>", { desc = "Move window to the right" })
+vim.keymap.set("n", "<leader>J", "<Cmd>wincmd J<CR>", { desc = "Move window to the lower" })
+vim.keymap.set("n", "<leader>K", "<Cmd>wincmd K<CR>", { desc = "Move window to the upper" })
 
 -- -----------------------
 -- Plugins
 -- -----------------------
+
 bootstrap_paq {
-    "savq/paq-nvim",
+    "savq/paq-nvim", -- Let Paq manage itself
+    -- colorscheme / theme
     { "kepano/flexoki-neovim", as = "flexoki" },
-    { "echasnovski/mini.nvim", branch = "stable" },
+
+    -- LSP
+    "neovim/nvim-lspconfig",
+
+    -- Mason
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+
+    -- mini plugins
+    { "echasnovski/mini.nvim",       branch = "stable" },
+
+    -- file browser
     "stevearc/oil.nvim",
+
+    -- terminal
     "akinsho/toggleterm.nvim",
+
+    -- telescope
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     "nvim-telescope/telescope.nvim",
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-path",
-    "hrsh7th/nvim-cmp",
-    { "L3MON4D3/LuaSnip", build = (function()
-        if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
-        return 'make install_jsregexp'
-    end)},
-    "saadparwaiz1/cmp_luasnip",
 }
 
--- -----------------------
--- Mini Setup
--- -----------------------
+--
+-- setup of said plugins
+--
+
+vim.diagnostic.config({
+    virtual_text = true,
+})
+
+-- colorscheme config
+vim.cmd.colorscheme "flexoki-dark"
+vim.cmd.hi 'Comment gui=none'
+
+-- mason setup
+require("mason").setup()
+require("mason-lspconfig").setup({
+    ensure_installed = {
+        "lua_ls"
+    }
+})
+
+-- LSP keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(ev)
+    local opts = { buffer = ev.buf, silent = true }
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
+  end,
+})
+
+-- Lua (Neovim-aware)
+vim.lsp.config('lua_ls', {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+    },
+  },
+})
+
+-- lsp diagnostics
+vim.diagnostic.config({
+  virtual_text = true, -- inline diagnostic messages
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+})
+
+-- mini config
 require("mini.icons").setup()
 require("mini.align").setup()
 require("mini.pairs").setup()
@@ -107,104 +193,43 @@ require("mini.surround").setup()
 require("mini.git").setup()
 local statusline = require('mini.statusline')
 statusline.setup({ use_icons = vim.g.have_nerd_font })
-statusline.section_location = function() return "%2l:%-2v" end
-
--- -----------------------
--- Telescope / Oil / Terminal
--- -----------------------
-require("oil").setup()
-vim.keymap.set('n', '-', "<CMD>Oil<CR>")
-
-require("toggleterm").setup()
-vim.keymap.set({"n","t"}, "<C-_>", "<CMD>ToggleTerm<CR>")
-
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>f', builtin.find_files)
-vim.keymap.set('n', '<leader>g', builtin.live_grep)
-vim.keymap.set('n', '<leader>b', builtin.buffers)
-vim.keymap.set('n', '<leader>.', builtin.oldfiles)
-vim.keymap.set('n', '<leader>p', builtin.builtin)
-vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find)
-
--- -----------------------
--- nvim-cmp
--- -----------------------
-local cmp = require("cmp")
-local luasnip = require("luasnip")
-luasnip.config.setup {}
-
-cmp.setup({
-    snippet = { expand = function(args) luasnip.lsp_expand(args.body) end },
-    mapping = cmp.mapping.preset.insert {
-        ['<C-n>'] = cmp.mapping.select_next_item(),
-        ['<C-p>'] = cmp.mapping.select_prev_item(),
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-y>'] = cmp.mapping.confirm { select = true },
-        ['<C-Space>'] = cmp.mapping.complete {},
-        ['<C-l>'] = cmp.mapping(function() if luasnip.expand_or_locally_jumpable() then luasnip.expand_or_jump() end end, { 'i', 's' }),
-        ['<C-h>'] = cmp.mapping(function() if luasnip.locally_jumpable(-1) then luasnip.jump(-1) end end, { 'i', 's' }),
-    },
-    sources = cmp.config.sources { { name = "nvim_lsp" }, { name = "luasnip" }, { name = "path" } }
-})
-
--- -----------------------
--- LSP Setup
--- -----------------------
-local on_attach = function(_, _)
-    local lsp_builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
-    vim.keymap.set('n', '<leader>ds', lsp_builtin.lsp_document_symbols)
-    vim.keymap.set('n', '<leader>ws', lsp_builtin.lsp_dynamic_workspace_symbols)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
-    vim.keymap.set('n', 'gr', lsp_builtin.lsp_references)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover)
+statusline.section_location = function()
+    return "%2l:%-2v"
 end
 
-local lspconfig = require("lspconfig")
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- file browser - oil
+require("oil").setup()
+vim.keymap.set('n', '-', "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
-local handlers = {
-    function(server_name)
-        lspconfig[server_name].setup {
-            on_attach = on_attach,
-            capabilities = capabilities,
-        }
-    end,
-    ["lua_ls"] = function()
-        lspconfig.lua_ls.setup({
-            on_attach = on_attach,
-            settings = { Lua = { diagnostics = { globals = {"vim"} } } },
-            capabilities = capabilities,
-        })
-    end
-}
+-- terminal
+require("toggleterm").setup()
+vim.keymap.set("n", "<C-_>", function()
+    vim.cmd("ToggleTerm")
+end)
+vim.keymap.set("t", "<C-_>", function()
+    vim.cmd("ToggleTerm")
+end)
 
-require("mason").setup()
-require("mason-lspconfig").setup({
-    automatic_installation = true,
-    handlers = handlers,
-})
+-- telescope config
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = "Find files"})
+vim.keymap.set('n', '<leader>g', builtin.live_grep , { desc = "Live Grep"})
+vim.keymap.set('n', '<leader>b', builtin.buffers   , { desc = "Buffers"})
+vim.keymap.set('n', '<leader>.', builtin.oldfiles  , { desc = "Recent files"})
+vim.keymap.set('n', '<leader>p', builtin.builtin   , { desc = "Select Telescope" })
+vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = "Fuzzy find in Current Buffer"})
 
--- -----------------------
--- Misc
--- -----------------------
-
--- highlight yanked text
+-- Highlight when yanking (copying) text
 vim.api.nvim_create_autocmd('TextYankPost', {
-    desc = 'Highlight when yanking',
-    group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
-    callback = function() vim.highlight.on_yank() end,
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('stinky-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
 })
 
+-- neovide specific config >:3
 if vim.g.neovide then
     vim.o.guifont = "JetBrainsMono Nerd Font Mono:h12"
 end
-
--- Colorscheme
-vim.cmd.colorscheme "flexoki-dark"
-vim.cmd.hi 'Comment gui=none'
 
