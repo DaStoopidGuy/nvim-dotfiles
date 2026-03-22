@@ -101,7 +101,8 @@ vim.keymap.set("n", "<leader>K", "<Cmd>wincmd K<CR>", { desc = "Move window to t
 bootstrap_paq {
     "savq/paq-nvim", -- Let Paq manage itself
     -- colorscheme / theme
-    { "kepano/flexoki-neovim", as = "flexoki" },
+    -- { "kepano/flexoki-neovim", as = "flexoki" },
+    { "rose-pine/neovim", as = "rose-pine" },
 
     -- LSP
     "neovim/nvim-lspconfig",
@@ -129,13 +130,10 @@ bootstrap_paq {
 -- setup of said plugins
 --
 
-vim.diagnostic.config({
-    virtual_text = true,
-})
-
 -- colorscheme config
-vim.cmd.colorscheme "flexoki-dark"
-vim.cmd.hi 'Comment gui=none'
+-- vim.cmd.colorscheme "flexoki-dark"
+-- vim.cmd.hi 'Comment gui=none'
+vim.cmd.colorscheme "rose-pine"
 
 -- mason setup
 require("mason").setup()
@@ -178,7 +176,7 @@ vim.lsp.config('lua_ls', {
 
 -- lsp diagnostics
 vim.diagnostic.config({
-  virtual_text = true, -- inline diagnostic messages
+  virtual_text = false, -- inline diagnostic messages
   signs = true,
   underline = true,
   update_in_insert = false,
@@ -196,6 +194,8 @@ statusline.setup({ use_icons = vim.g.have_nerd_font })
 statusline.section_location = function()
     return "%2l:%-2v"
 end
+-- require("mini.snippets").setup()
+require("mini.completion").setup()
 
 -- file browser - oil
 require("oil").setup()
